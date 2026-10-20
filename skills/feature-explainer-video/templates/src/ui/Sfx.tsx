@@ -1,22 +1,30 @@
 import { Audio } from '@remotion/media';
 import { Sequence, staticFile } from 'remotion';
 
-/** The handful of sounds the video uses, vendored into public/sfx from remotion.media. */
-export type SfxName = 'whoosh' | 'mouse-click' | 'ding' | 'switch' | 'page-turn';
+/** Downloaded from remotion.media by `pnpm sfx`. */
+export const REMOTE_SFX = ['whoosh', 'whip', 'mouse-click', 'ding', 'switch', 'page-turn'] as const;
+/** Synthesised by `pnpm audio` (scripts/generate-audio.ts). */
+export const SYNTH_SFX = ['impact', 'pop', 'riser'] as const;
+
+export type SfxName = (typeof REMOTE_SFX)[number] | (typeof SYNTH_SFX)[number];
 
 const VOLUME: Record<SfxName, number> = {
   whoosh: 0.35,
+  whip: 0.28,
   'mouse-click': 0.5,
   ding: 0.3,
   switch: 0.35,
   'page-turn': 0.3,
+  impact: 0.55,
+  pop: 0.22,
+  riser: 0.3,
 };
 
 /** A short sound at frame `at`, quiet enough to sit under the voice. */
-export function Sfx({ name, at }: { name: SfxName; at: number }): React.JSX.Element {
+export function Sfx({ name, at, volume }: { name: SfxName; at: number; volume?: number }): React.JSX.Element {
   return (
-    <Sequence from={Math.max(0, Math.round(at))} durationInFrames={45} layout="none" name={`sfx:${name}`}>
-      <Audio src={staticFile(`sfx/${name}.wav`)} volume={VOLUME[name]} />
+    <Sequence from={Math.max(0, Math.round(at))} durationInFrames={75} layout="none" name={`sfx:${name}`}>
+      <Audio src={staticFile(`sfx/${name}.wav`)} volume={volume ?? VOLUME[name]} />
     </Sequence>
   );
 }

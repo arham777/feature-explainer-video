@@ -1,5 +1,5 @@
 import durations from './voiceover/durations.json';
-import type { VoiceLineId } from './voiceover/lines';
+import { VOICE_LINES, type VoiceLineId } from './voiceover/lines';
 import { VIDEO } from './theme';
 
 /** Silence before a line starts inside its beat, and after it ends. */
@@ -9,11 +9,20 @@ export const TAIL = 20;
 export const TRANSITION = 20;
 
 /**
+ * Beats that play silent visuals before the voice comes in. The hook is the
+ * usual one: a second or two of picture first is what makes people stop.
+ */
+const LEADS: Partial<Record<VoiceLineId, number>> = {
+  hook: 40,
+};
+
+/**
  * Beats whose on-screen choreography needs longer than the line itself takes
  * to say. Everything else is sized purely by its voiceover.
  */
 const MIN_FRAMES: Partial<Record<VoiceLineId, number>> = {
-  intro: 150,
+  hook: 200,
+  intro: 120,
   create: 270,
   add: 150,
   notify: 150,
@@ -21,16 +30,32 @@ const MIN_FRAMES: Partial<Record<VoiceLineId, number>> = {
   outro: 150,
 };
 
+export function lead(id: VoiceLineId): number {
+  return LEADS[id] ?? LEAD;
+}
+
 export function audioFrames(id: VoiceLineId): number {
   return Math.ceil((durations as Record<string, number>)[id] * VIDEO.fps);
 }
 
 export function beatLength(id: VoiceLineId): number {
-  return Math.max(MIN_FRAMES[id] ?? 0, LEAD + audioFrames(id) + TAIL);
+  return Math.max(MIN_FRAMES[id] ?? 0, lead(id) + audioFrames(id) + TAIL);
+}
+
+/**
+ * Frame inside the beat when `phrase` is spoken, estimated from where it sits
+ * in the line. Hang visual moments off this, so they move with the voice.
+ */
+export function spokenAt(id: VoiceLineId, phrase: string): number {
+  const text = VOICE_LINES.find((l) => l.id === id)?.text ?? '';
+  const index = text.indexOf(phrase);
+  if (index < 0) throw new Error(`"${phrase}" is not in line "${id}"`);
+  return Math.round(lead(id) + (index / text.length) * audioFrames(id));
 }
 
 /** Chapters are continuous screens; each narrates one or more beats. */
 export const CHAPTERS = [
+  { id: 'hook', beats: ['hook'] },
   { id: 'intro', beats: ['intro'] },
   { id: 'board', beats: ['create', 'add'] },
   { id: 'teammate', beats: ['notify', 'done'] },
@@ -60,6 +85,16 @@ export function chapterBeats(beats: readonly VoiceLineId[]): Beats {
 
 export function chapterLength(beats: readonly VoiceLineId[]): number {
   return beats.reduce((sum, id) => sum + beatLength(id), 0);
+}
+
+/** Where a chapter starts in the whole video, after the crossfades before it. */
+export function chapterStart(id: ChapterId): number {
+  let start = 0;
+  for (const chapter of CHAPTERS) {
+    if (chapter.id === id) return start;
+    start += chapterLength(chapter.beats) - TRANSITION;
+  }
+  throw new Error(`Unknown chapter "${id}"`);
 }
 
 export const TOTAL_FRAMES =

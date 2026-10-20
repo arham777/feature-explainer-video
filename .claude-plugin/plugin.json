@@ -1,12 +1,12 @@
 {
   "name": "feature-explainer-video",
-  "version": "1.0.0",
-  "description": "Narrated, product-accurate explainer videos of features in your own app, made with Remotion and a free local voiceover.",
+  "version": "1.1.0",
+  "description": "Narrated, product-accurate videos of your own app: feature walkthroughs and product ads that open with a hook. Remotion, a free local voiceover and generated music.",
   "author": {
     "name": "Arham",
     "url": "https://github.com/arham777"
   },
   "repository": "https://github.com/arham777/feature-explainer-video",
   "license": "MIT",
-  "keywords": ["remotion", "video", "explainer", "walkthrough", "tts", "kokoro"]
+  "keywords": ["remotion", "video", "explainer", "walkthrough", "product-ad", "promo", "tts", "kokoro"]
 }

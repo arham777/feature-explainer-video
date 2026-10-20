@@ -8,6 +8,7 @@
     "studio": "remotion studio",
     "voiceover": "tsx scripts/generate-voiceover.ts",
     "sfx": "tsx scripts/fetch-sfx.ts",
+    "audio": "tsx scripts/generate-audio.ts",
     "render": "remotion render FeatureExplainer out/feature-explainer.mp4",
     "stills": "tsx scripts/render-stills.ts",
     "typecheck": "tsc --noEmit"

@@ -18,8 +18,12 @@ export interface VoiceLine {
 
 export const VOICE_LINES = [
   {
+    id: 'hook',
+    text: 'Three group chats, two spreadsheets, and still nobody knows who is sending the launch email.',
+  },
+  {
     id: 'intro',
-    text: 'This is Orbit Tasks. One calm place to plan the week with your team.',
+    text: 'Orbit Tasks puts the whole week on one calm board.',
   },
   {
     id: 'create',

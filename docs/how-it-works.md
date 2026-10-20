@@ -1,6 +1,37 @@
 # How it works
 
-This is what happens inside a video made by the skill, and why it is built this way. The code samples come from the example project in [`examples/orbit-demo`](../examples/orbit-demo), a walkthrough of a made-up task app called Orbit Tasks. Shared pieces live in `skills/feature-explainer-video/templates/`.
+This is what happens inside a video made by the skill, and why it is built this way. The code samples come from the two example projects:
+
+- [`examples/orbit-demo`](../examples/orbit-demo): a 16:9 **feature walkthrough** of a made-up task app, Orbit Tasks.
+- [`examples/tide-ad`](../examples/tide-ad): a 9:16 **product ad** for a made-up money app, Tide.
+
+Shared pieces live in `skills/feature-explainer-video/templates/`.
+
+## The hook: the first five seconds
+
+Nobody keeps watching a logo. Both examples open on the **problem**, not the product:
+
+| | Orbit (walkthrough) | Tide (ad) |
+|---|---|---|
+| The mess | Team messages pile up on a dark screen: "Is anyone on the launch email?", "tracker_v3_FINAL.xlsx" | Card payments land faster than you can read them while the balance drains from $2,140 to $312 |
+| The question | **Who's _on it?_** | **Where did it _go?_** |
+| The turn | The messages collapse to the centre, a wipe cuts to the logo | A wipe cuts straight to the phone with the answer |
+
+How it is built:
+
+1. **Picture before voice.** The hook beat gets a longer lead-in (`LEADS = { hook: 40 }` in `timeline.ts`), so the screen is already moving for over a second before the narrator speaks.
+2. **Build.** Items arrive on springs (`pop`) at a quickening pace, each with a quiet `pop` sound.
+3. **Slam.** On the key phrase of the line, found with `spokenAt('hook', 'nobody knows')`, the `Headline` lands with an `impact` and a `whip`, the frame shakes for half a second, and everything behind it blurs and dims.
+4. **Turn.** Dark to light: the hook clears and a `Wipe` (an ink band with an accent edge) sweeps over the cut. A `riser` and the music bed carry into the product.
+
+```tsx
+const question = hook.start + spokenAt('hook', 'nobody knows');
+const dim = progress(frame, question - 4, 12);           // the mess blurs back
+...
+<Headline words={[{ text: "Who's" }, { text: 'on it?', mark: true }]} at={question} top={420} size={160} />
+<Sfx name="impact" at={question} />
+<Sfx name="whip" at={question + 2} />
+```
 
 ## The one big rule: everything is a function of the frame
 
@@ -22,6 +53,7 @@ The script is split into **beats**, one narrated line each. Beats are grouped in
 
 ```ts
 export const CHAPTERS = [
+  { id: 'hook', beats: ['hook'] },
   { id: 'intro', beats: ['intro'] },
   { id: 'board', beats: ['create', 'add'] },
   { id: 'teammate', beats: ['notify', 'done'] },
@@ -38,6 +70,7 @@ beat length = max(MIN_FRAMES, LEAD + audio + TAIL)
 | Constant | Frames | Why |
 |---|---|---|
 | `LEAD` | 10 | A breath of silence before the voice starts, so the picture can move first |
+| `LEADS` | per beat | A longer lead for beats that play picture first, like the hook |
 | `TAIL` | 20 | Room after the line ends, so it never feels cut off |
 | `TRANSITION` | 20 | The crossfade between chapters. Kept smaller than `LEAD + TAIL`, so two voices never overlap |
 | `MIN_FRAMES` | per beat | For beats whose on-screen action takes longer than the words, such as a form being filled in |
@@ -58,6 +91,14 @@ const landed      = clickCreate + 16;
 ```
 
 The cursor, the dialog states, the camera and the sound effects are all driven from these names. If a beat gets longer, everything that belongs to it moves with it.
+
+When a visual should land on a particular **word**, use `spokenAt(id, phrase)`. It estimates the frame from where the phrase sits in the line, so it keeps working after you rewrite the line and record it again:
+
+```tsx
+const subsAt  = spokenAt('more', 'It finds');       // Tide's three cards each
+const splitAt = spokenAt('more', 'It splits');      // fly in on their own phrase
+const goalAt  = spokenAt('more', 'And it rounds');
+```
 
 ## Layout you can aim at
 
@@ -148,17 +189,47 @@ On title cards that already show their words, subtitles are switched off (`<Narr
 
 ## Sound effects (`src/ui/Sfx.tsx`)
 
-Five short sounds, downloaded once into `public/sfx/` from `https://remotion.media/<name>.wav`, so renders work offline:
+Six sounds are downloaded once from `https://remotion.media/<name>.wav` by `pnpm sfx`. Three more are synthesised by `pnpm audio`. Everything renders offline after that.
 
-| Sound | Volume | Used in the demo for |
-|---|---|---|
-| `mouse-click` | 0.5 | Every cursor click |
-| `whoosh` | 0.35 | Title cards, the dialog opening |
-| `switch` | 0.35 | Picking an owner and a due day, ticking a task off |
-| `page-turn` | 0.3 | The new row landing on the board |
-| `ding` | 0.3 | The notification arriving |
+| Sound | From | Volume | Used for |
+|---|---|---|---|
+| `mouse-click` | remotion.media | 0.5 | Every cursor click |
+| `whoosh` | remotion.media | 0.35 | Cuts between scenes, a dialog opening |
+| `whip` | remotion.media | 0.28 | A headline landing |
+| `switch` | remotion.media | 0.35 | Picking an option, ticking a task off |
+| `page-turn` | remotion.media | 0.3 | A new row landing in a list |
+| `ding` | remotion.media | 0.3 | A notification or nudge arriving |
+| `pop` | synthesised | 0.22 | Items piling up in the hook, the logo appearing |
+| `impact` | synthesised | 0.55 | The hook's question slamming in |
+| `riser` | synthesised | 0.3 | The build into the logo |
 
-Volumes are low on purpose so the sounds sit under the voice. A sound is placed at a named moment: `<Sfx name="mouse-click" at={clickNew} />`.
+Volumes are low on purpose so the sounds sit under the voice. A sound is placed at a named moment: `<Sfx name="mouse-click" at={clickNew} />`, with an optional `volume` for a quieter run of repeats.
+
+## Music (`scripts/generate-audio.ts`, `src/ui/Music.tsx`)
+
+The music bed is generated by code, so it is free, needs no licence, and comes out the same on every run. It is a soft pad over a chord loop. A kick, a plucked arpeggio and hi-hats grow in over the first 8 seconds.
+
+- **Mood:** `BPM` and `CHORDS` at the top of the script. Orbit uses 96 BPM in A minor (calm). Tide uses 104 BPM in C major (upbeat).
+- **Placement:** `<Music from={chapterStart('intro')} swellAt={chapterStart('outro')} end={TOTAL_FRAMES} />`. It starts after the hook (the hook is better with only its own sounds), sits at 0.12 under the voice, swells to 0.2 for the logo, and fades out at the end.
+- A `riser` about 30 frames before the logo makes the swell feel earned.
+
+## Kinetic headlines (`src/ui/Headline.tsx`)
+
+Each word rises, sharpens out of a blur and straightens out of a tilt, 3 frames after the one before. Then a highlighter in the accent color sweeps in behind the `mark`ed words, and their text turns white.
+
+- In an ad, every scene gets one claim of 2 to 5 words. The claim is the point of the scene, not a copy of the narration: "A nudge, not a _surprise._"
+- To change the claim within a scene, give the old headline an `out` frame and start the new one a few frames later.
+
+## Wipes (`src/ui/Wipe.tsx`)
+
+A tilted ink band with an accent leading edge sweeps up and covers the frame at the cut, then clears it 9 frames later. It hides a hard cut completely, so the ad can jump between very different scenes. A `whoosh` placed 9 frames earlier lands with it. Orbit uses one wipe, out of the hook. Tide uses one on every cut.
+
+## Product ads: phone and deck (`examples/tide-ad`)
+
+- **`Phone`** draws a mobile screen at its real size (390 x 844 dp) inside a phone frame, scaled by `DP`. `rise` brings it up from below the frame on a spring, and `tilt` leans it back in 3D as it arrives. `onCanvas(x, y)` turns a dp point into frame coordinates, which Tide's budget scene uses to zoom in on the spot where the notification lands.
+- **Numbers count, meters fill.** "Safe to spend" counts up from $0 and the category meters grow in, so the screen comes alive instead of appearing finished.
+- **The deck.** The smaller features become cards that fly in from the right, each on its own phrase. Every new card pushes the older ones up, back and into the page, so the newest is always front and centre.
+- **Logo outro.** An accent disc swells and fades as the logo pops into it, the name rises, then the tagline headline and two fact chips. Subtitles are off here because the words are already on screen.
 
 ## Visuals: making it look like your app
 
