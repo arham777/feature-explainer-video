@@ -10,7 +10,7 @@
  */
 import { mkdirSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { KokoroTTS } from 'kokoro-js';
-import { VOICE_LINES } from '../src/voiceover/lines';
+import { VOICE_LINES, type VoiceLine } from '../src/voiceover/lines';
 
 const MODEL_ID = 'onnx-community/Kokoro-82M-v1.0-ONNX';
 // af_heart is Kokoro's highest-graded English voice: warm, clear, unhurried.
@@ -21,7 +21,8 @@ const DURATIONS_FILE = 'src/voiceover/durations.json';
 
 async function main(): Promise<void> {
   const only = new Set(process.argv.slice(2));
-  const lines = VOICE_LINES.filter((l) => only.size === 0 || only.has(l.id));
+  // Widened, so `spoken` type-checks even when no line uses it.
+  const lines = (VOICE_LINES as readonly VoiceLine[]).filter((l) => only.size === 0 || only.has(l.id));
   if (lines.length === 0) throw new Error(`No voice lines match: ${[...only].join(', ')}`);
 
   mkdirSync(OUT_DIR, { recursive: true });
@@ -33,7 +34,7 @@ async function main(): Promise<void> {
   const tts = await KokoroTTS.from_pretrained(MODEL_ID, { dtype: 'q8', device: 'cpu' });
 
   for (const line of lines) {
-    const spoken = 'spoken' in line ? line.spoken : line.text;
+    const spoken = line.spoken ?? line.text;
     const audio = await tts.generate(spoken, { voice: VOICE, speed: SPEED });
     await audio.save(`${OUT_DIR}/${line.id}.wav`);
     const seconds = audio.audio.length / audio.sampling_rate;

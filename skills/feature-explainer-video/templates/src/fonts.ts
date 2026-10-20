@@ -2,17 +2,14 @@ import { continueRender, delayRender, staticFile } from 'remotion';
 
 /**
  * The app's own faces, from the same woff2 files it ships (copied into
- * public/fonts). These are the reference build's; swap in the app's.
+ * public/fonts). [family, file, weight]; the list below is an example.
  */
 const FACES = [
-  ['Satoshi', 'Satoshi-Medium.woff2', '500'],
-  ['Satoshi', 'Satoshi-Bold.woff2', '700'],
   ['Geist', 'Geist-Regular.woff2', '400'],
   ['Geist', 'Geist-Medium.woff2', '500'],
   ['Geist', 'Geist-SemiBold.woff2', '600'],
   ['Geist', 'Geist-Bold.woff2', '700'],
   ['Geist Mono', 'GeistMono-Medium.woff2', '500'],
-  ['Geist Mono', 'GeistMono-Bold.woff2', '700'],
 ] as const;
 
 let requested = false;

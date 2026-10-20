@@ -13,11 +13,12 @@ export const TRANSITION = 20;
  * to say. Everything else is sized purely by its voiceover.
  */
 const MIN_FRAMES: Partial<Record<VoiceLineId, number>> = {
-  ask: 120,
-  send: 240,
-  withdraw: 150,
-  decide: 220,
-  outro: 180,
+  intro: 150,
+  create: 270,
+  add: 150,
+  notify: 150,
+  done: 210,
+  outro: 150,
 };
 
 export function audioFrames(id: VoiceLineId): number {
@@ -31,12 +32,8 @@ export function beatLength(id: VoiceLineId): number {
 /** Chapters are continuous screens; each narrates one or more beats. */
 export const CHAPTERS = [
   { id: 'intro', beats: ['intro'] },
-  { id: 'roles', beats: ['roles'] },
-  { id: 'member', beats: ['ask', 'types', 'weekend', 'send', 'withdraw'] },
-  { id: 'admin', beats: ['notify', 'decide'] },
-  { id: 'result', beats: ['result'] },
-  { id: 'planner', beats: ['planner'] },
-  { id: 'everywhere', beats: ['everywhere'] },
+  { id: 'board', beats: ['create', 'add'] },
+  { id: 'teammate', beats: ['notify', 'done'] },
   { id: 'outro', beats: ['outro'] },
 ] as const satisfies readonly { id: string; beats: readonly VoiceLineId[] }[];
 

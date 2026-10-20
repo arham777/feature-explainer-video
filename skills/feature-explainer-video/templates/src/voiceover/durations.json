@@ -1,15 +1,8 @@
 {
-  "intro": 5.725,
-  "roles": 7.325,
-  "ask": 3.5,
-  "types": 10.225,
-  "weekend": 4.975,
-  "send": 6.8,
-  "withdraw": 4.05,
-  "notify": 6.925,
-  "decide": 4.55,
-  "result": 9.075,
-  "planner": 8.575,
-  "everywhere": 7.85,
-  "outro": 4.3
+  "intro": 4.575,
+  "create": 4.625,
+  "add": 3.875,
+  "notify": 4.3,
+  "done": 4.625,
+  "outro": 3.125
 }

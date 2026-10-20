@@ -1,45 +1,48 @@
 /**
  * The app's design tokens, copied from its CSS so the video wears the same
- * skin as the product. These values are the reference build's; replace every
- * one with the app's own (colors, tone pairs, radii, shadows, fonts).
+ * skin as the product. These values are the Orbit demo's; replace every one
+ * with the app's own (colors, tone pairs, radii, shadows, fonts).
  */
-const text = '#15161a';
+const text = '#18181b';
 const card = '#ffffff';
 const mix = (hue: string, pct: number, base = card): string =>
   `color-mix(in srgb, ${hue} ${pct}%, ${base})`;
 
+const accent = '#3b5bfd';
+
 export const color = {
-  canvas: '#f4f3ef',
+  canvas: '#f5f5f3',
+  sidebar: '#efefec',
   card,
-  ink: '#0e0f11',
+  ink: '#111113',
   text,
-  text2: '#62666e',
-  text3: '#9aa0a8',
-  line: mix(text, 7),
+  text2: '#6b6b74',
+  text3: '#a3a3ab',
   fill: mix(text, 4),
-  accent: '#0E7A54',
-  accentSoft: '#e6f7f0',
+  fill2: mix(text, 8),
+  accent,
+  accentSoft: mix(accent, 10),
   danger: '#e5484d',
   tone: {
-    neutral: { ink: '#4b5563', fill: mix('#9aa0a8', 13) },
-    brand: { ink: '#0A5C40', fill: mix('#0E7A54', 13) },
-    attention: { ink: '#8a6206', fill: mix('#e8a93b', 13) },
+    blue: { ink: '#2f45c9', fill: mix(accent, 14) },
+    green: { ink: '#1d7a46', fill: mix('#22a35a', 14) },
+    amber: { ink: '#8a5a06', fill: mix('#e8a93b', 18) },
+    rose: { ink: '#b4304d', fill: mix('#e5486d', 14) },
   },
   mix,
 } as const;
 
 export type Tone = keyof typeof color.tone;
 
-export const radius = { xs: 6, sm: 11, md: 15, lg: 20, xl: 26, pill: 999 } as const;
+export const radius = { sm: 10, md: 14, lg: 20, pill: 999 } as const;
 
 export const shadow = {
-  ring: '0 0 0 1px rgba(15, 15, 15, 0.06)',
-  float: '0 0 0 1px rgba(15, 15, 15, 0.07), 0 16px 40px -20px rgba(16, 18, 22, 0.24)',
-  modal: '0 0 0 1px rgba(15, 15, 15, 0.06), 0 32px 80px -24px rgba(16, 18, 22, 0.35)',
+  ring: '0 0 0 1px rgba(17, 17, 19, 0.06)',
+  float: '0 0 0 1px rgba(17, 17, 19, 0.06), 0 18px 44px -18px rgba(17, 17, 19, 0.28)',
+  modal: '0 0 0 1px rgba(17, 17, 19, 0.06), 0 36px 90px -24px rgba(17, 17, 19, 0.4)',
 } as const;
 
 export const font = {
-  display: '"Satoshi", "Geist", system-ui, sans-serif',
   sans: '"Geist", system-ui, sans-serif',
   mono: '"Geist Mono", ui-monospace, monospace',
 } as const;

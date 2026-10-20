@@ -1,0 +1,8 @@
+# Makes the video folder its own pnpm root, so installs here never relink the
+# app's workspace. Not needed if the app does not use pnpm workspaces.
+packages: []
+onlyBuiltDependencies:
+  - onnxruntime-node
+  - protobufjs
+  - sharp
+  - esbuild

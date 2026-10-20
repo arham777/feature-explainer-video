@@ -6,11 +6,11 @@ It reads your code to understand the feature, writes a script for you to approve
 
 Built on [Remotion](https://www.remotion.dev) and [Kokoro TTS](https://huggingface.co/hexgrad/Kokoro-82M). No API keys, no paid voice service.
 
-| A member asks for leave | An admin decides | A reviewer opens the request |
+| Fill in a new task | It lands, and the owner is told | Tick it off, progress moves |
 |---|---|---|
-| ![Member picks a leave type in the Ask for leave dialog](assets/member-asks.gif) | ![Admin approves a request with a note](assets/admin-decides.gif) | ![Reviewer sees the request in Waiting on you](assets/admin-reviews.gif) |
+| ![The New task dialog: a name is typed, an owner and a due day are picked](assets/create-task.gif) | ![The new row grows into the list, then a notification slides in for the owner](assets/task-lands.gif) | ![The task is ticked off and the week's progress bar fills](assets/tick-off.gif) |
 
-*Clips from two 95 second videos this skill made: "Leaves" and "Approvals" in a team portal. All names in them are made up.*
+*Clips from a 35 second demo the skill made for **Orbit Tasks**, a made-up app. The full project is in [examples/orbit-demo](examples/orbit-demo).*
 
 ## Install
 
@@ -51,9 +51,9 @@ Copy `skills/feature-explainer-video/` into `~/.claude/skills/` for every projec
 
 Open your app's repo in your agent and ask for a video. For example:
 
-> Make an explainer video of how leave requests work, for members and admins.
+> Make an explainer video of how invoices get approved, for staff and managers.
 
-> Make a walkthrough video of the new approvals flow: submit, review, reject with a reason, fix and approve.
+> Make a walkthrough video of a support ticket: opened, assigned, sent back for details, then solved.
 
 > I need a 90 second demo video of the invoice screen for our sales team. Captions only, no voice.
 
@@ -83,6 +83,7 @@ skills/feature-explainer-video/
     remotion.webpack.ts        alias to your app's shared code, so labels stay true
     scripts/generate-voiceover.ts   lines.ts to WAV files and durations.json
     scripts/render-stills.ts        renders chosen frames for checking
+    scripts/fetch-sfx.ts            downloads the five sound effects into public/sfx
     src/theme.ts               your design tokens, the video size and the stage size
     src/fonts.ts               loads your app's own font files before frame one
     src/timeline.ts            beat and chapter lengths, sized from the voiceover
@@ -94,6 +95,7 @@ skills/feature-explainer-video/
     src/voiceover/lines.ts     the script (one place for audio and subtitles)
 docs/how-it-works.md           the deep dive
 examples/README.md             prompts and a full sample script
+examples/orbit-demo/           a complete example project (the GIFs above)
 ```
 
 ## Licenses
@@ -101,4 +103,5 @@ examples/README.md             prompts and a full sample script
 - This skill: [MIT](LICENSE).
 - **Remotion** has its own license. It is free for individuals and for companies of up to 3 people. Bigger companies need a [company license](https://www.remotion.dev/license) to render videos with it.
 - **Kokoro-82M** is Apache 2.0.
-- Sound effects are downloaded from `remotion.media` when a project is set up. They are not stored in this repo.
+- Sound effects are downloaded from `remotion.media` by `pnpm sfx` when a project is set up. They are not stored in this repo.
+- Orbit Tasks, its logo and its people are made up. The demo uses the Geist font from Google Fonts.

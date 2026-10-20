@@ -7,9 +7,11 @@ description: Make a narrated, product-accurate explainer video of a feature in t
 
 The result is a 60 to 120 second, 16:9 video. It looks like the real product, narrates
 how a feature works for each role, and every label in it is true to the code.
-`templates/` here holds the reusable plumbing from a reference build (a "Leaves"
-explainer for a team portal). Its `lines.ts`, `timeline.ts` and `theme.ts` are
-filled in with that example: keep the shape, replace the content.
+`templates/` here holds the reusable plumbing. Its `lines.ts`, `timeline.ts` and
+`theme.ts` are filled in with a worked example (Orbit Tasks, a made-up task
+app): keep the shape, replace the content. The complete example project,
+screens and chapters included, is `examples/orbit-demo` in
+https://github.com/arham777/feature-explainer-video. Read it when in doubt.
 
 Load `remotion-best-practices` before you write Remotion code. It covers
 `interpolate`/`spring`, Sequences, transitions, and the fact that **CSS
@@ -52,15 +54,16 @@ animations and transitions are forbidden**.
   `Composition` sized by `TOTAL_FRAMES`), the app shell, the chapters and small
   helpers such as `Reveal` yourself.
 - Use the package manager the user prefers. Pin every `remotion` / `@remotion/*` package to the same exact version.
-- Vendor SFX into `public/sfx` (from `https://remotion.media/<name>.wav`: whoosh,
-  mouse-click, ding, switch, page-turn), so renders work offline.
+- Run `pnpm sfx` (`scripts/fetch-sfx.ts`) to download the SFX into `public/sfx`
+  from `https://remotion.media/<name>.wav` (whoosh, mouse-click, ding, switch,
+  page-turn), so renders work offline.
 
 ## Phase 3: voiceover (free, local)
 
 - Use **Kokoro-82M via `kokoro-js`**, which is Apache 2.0, runs on the CPU and needs no API key. The default voice is `af_heart`.
   Only suggest ElevenLabs if the user asks for it.
 - `src/voiceover/lines.ts` is the single source for both the audio and the
-  subtitles. Use an optional `spoken` field for pronunciation (for example "X-Loop" spoken as "Ex Loop").
+  subtitles. Use an optional `spoken` field for pronunciation (for example a product called "Qx" spoken as "queue ex").
 - `scripts/generate-voiceover.ts` writes `public/voiceover/<id>.wav` and
   `src/voiceover/durations.json`. Run it in the background; the first run downloads about 90 MB.
 - Beat length = `max(MIN_FRAMES, LEAD + audio + TAIL)`. Retiming = edit line,

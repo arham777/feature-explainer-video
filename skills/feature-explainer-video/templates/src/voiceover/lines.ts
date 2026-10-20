@@ -4,11 +4,11 @@
  * subtitles, so what is heard and what is read can never drift.
  *
  * `spoken` exists only where the TTS needs a nudge to pronounce something the
- * way the team says it ("X-Loop" read as "ex loop").
+ * way the team says it, for example a product called "Qx" read as "queue ex".
  *
- * The lines below are the reference build's (the Leaves video), kept as a
- * worked example. Replace them with the approved script, then update
- * CHAPTERS and MIN_FRAMES in timeline.ts to match.
+ * The lines below are the Orbit demo's (examples/orbit-demo in the skill's
+ * repo), kept as a worked example. Replace them with the approved script, then
+ * update CHAPTERS and MIN_FRAMES in timeline.ts to match.
  */
 export interface VoiceLine {
   id: string;
@@ -19,57 +19,27 @@ export interface VoiceLine {
 export const VOICE_LINES = [
   {
     id: 'intro',
-    text: 'This is Leaves, in X-Loop. The simple way to ask for time off, and to decide on it.',
-    spoken: 'This is Leaves, in Ex Loop. The simple way to ask for time off, and to decide on it.',
+    text: 'This is Orbit Tasks. One calm place to plan the week with your team.',
   },
   {
-    id: 'roles',
-    text: 'There are two sides. Members ask for leave. Admins approve or decline it, and see the whole team at a glance.',
+    id: 'create',
+    text: 'Click New task. Give it a name, pick who owns it, and choose a due day.',
   },
   {
-    id: 'ask',
-    text: 'As a member, open Leaves and click Ask for leave.',
-  },
-  {
-    id: 'types',
-    text: 'Pick the kind of leave you need: a full day, multiple days, a half day, work from home, a late come, or an early go. Each one shows how many hours it costs.',
-  },
-  {
-    id: 'weekend',
-    text: 'Pick a date. Weekends are not working days, so the form stops you right away.',
-  },
-  {
-    id: 'send',
-    text: 'Add a short reason, check the summary, and send. Nothing is booked yet. Your request waits for an admin.',
-  },
-  {
-    id: 'withdraw',
-    text: 'Changed your mind? Withdraw it any time while it is still waiting.',
+    id: 'add',
+    text: 'Press Create, and the task lands on the board for everyone.',
   },
   {
     id: 'notify',
-    text: 'On the admin side, a notification arrives straight away, and the request joins the list waiting for them.',
+    text: 'Maya gets a notification straight away, so nothing slips through.',
   },
   {
-    id: 'decide',
-    text: 'The admin approves or declines, and can add a note so you know why.',
-  },
-  {
-    id: 'result',
-    text: 'Back on your side, the answer appears instantly, with the note and who decided. Nothing is ever deleted. Every request stays on record.',
-  },
-  {
-    id: 'planner',
-    text: 'Every approved day lands on the team planner. The allowance is one day a month, and twelve a year. Go over, and that month turns red.',
-  },
-  {
-    id: 'everywhere',
-    text: 'Approved leave shows up wherever it matters: an On leave badge next to your name, and a heads up when someone books a meeting with you.',
+    id: 'done',
+    text: "When the work is finished, tick it off. The week's progress moves on its own.",
   },
   {
     id: 'outro',
-    text: 'Leaves, in X-Loop. Ask in seconds. Decide in one click.',
-    spoken: 'Leaves, in Ex Loop. Ask in seconds. Decide in one click.',
+    text: 'Orbit Tasks. Plan it, share it, ship it.',
   },
 ] as const satisfies readonly VoiceLine[];
 
