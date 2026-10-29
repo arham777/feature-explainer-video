@@ -1,0 +1,6 @@
+node_modules
+out
+.cache
+# Downloaded by `pnpm sfx` and synthesised by `pnpm audio`; both rebuild on demand.
+public/sfx
+public/music
